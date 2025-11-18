@@ -78,7 +78,30 @@ python3 ohms_law.py
 ## Files
 
 - `physics_formulas.py` - Main physics library with comprehensive formulas
+- `test_physics.py` - Test suite validating all formulas
+- `examples.py` - Practical examples demonstrating real-world applications
 - `ohms_law.py` - Interactive Ohm's law calculator
+
+## Running Examples
+
+### View practical examples
+```bash
+python3 examples.py
+```
+
+This runs 7 real-world examples:
+1. Projectile motion (ball thrown upward)
+2. Car acceleration and energy
+3. Home electricity calculations
+4. Heating water
+5. Light wave properties
+6. Earth-Moon gravitational system
+7. Relativistic space travel
+
+### Run tests
+```bash
+python3 test_physics.py
+```
 
 ## Requirements
 
