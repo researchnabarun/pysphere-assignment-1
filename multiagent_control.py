@@ -164,13 +164,18 @@ class MultiAgentSystem:
         """
         Tp = self.params.prescribed_time
         
-        # Time-varying scaling function
+        # Time-varying scaling function with saturation for numerical stability
         # ρ(t) = exp(a * t / (Tp - t)) for t < Tp
-        if t >= Tp - 0.01:  # Near prescribed time
-            rho_t = 1e6  # Large value to ensure convergence
+        if t >= Tp - 0.1:  # Near prescribed time, use saturated value
+            rho_t = 1e3  # Large but bounded value
         else:
-            a = 2.0
-            rho_t = np.exp(a * t / (Tp - t))
+            a = 1.0  # Reduced from 2.0 for better stability
+            exponent = a * t / (Tp - t)
+            # Saturate exponent to prevent overflow
+            exponent = np.clip(exponent, -10, 10)
+            rho_t = np.exp(exponent)
+            # Additional saturation of the gain
+            rho_t = min(rho_t, 1e3)
         
         # Get current agent state
         agent = self.agents[agent_idx]
@@ -193,6 +198,9 @@ class MultiAgentSystem:
         # u(t) = -ρ(t) * k * e(t)
         k = self.params.k1
         control = -rho_t * k * total_error
+        
+        # Saturate control to prevent numerical issues
+        control = np.clip(control, -1e3, 1e3)
         
         # Apply fault compensation
         control = control / (agent.fault_factor + 1e-6)
